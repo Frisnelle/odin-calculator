@@ -31,6 +31,7 @@ function operate(operator, a, b) {
       return null;
   }
 }
+
 let firstNumber = "";
 let operator = "";
 let secondNumber = "";
@@ -48,11 +49,9 @@ function evaluate() {
   const result = operate(operator, Number(firstNumber), Number(secondNumber));
 
   if (typeof result === "number") {
-    // Arrondir pour éviter l'overflow d'affichage
     updateDisplay(Math.round(result * 1000) / 1000);
     firstNumber = String(Math.round(result * 1000) / 1000);
   } else {
-    // cas division par 0 (message d'erreur)
     updateDisplay(result);
     firstNumber = "";
   }
@@ -61,14 +60,15 @@ function evaluate() {
   secondNumber = "";
 }
 
-// Boutons chiffres
 document.querySelectorAll(".digit").forEach((btn) => {
   btn.addEventListener("click", () => {
     const digit = btn.textContent;
 
     if (shouldResetDisplay) {
-      firstNumber = "";
       updateDisplay("");
+      if (operator === "") {
+        firstNumber = "";
+      }
       shouldResetDisplay = false;
     }
 
@@ -82,7 +82,6 @@ document.querySelectorAll(".digit").forEach((btn) => {
   });
 });
 
-// Bouton décimal
 document.querySelector(".decimal").addEventListener("click", () => {
   if (operator === "") {
     if (!firstNumber.includes(".")) {
@@ -97,29 +96,26 @@ document.querySelector(".decimal").addEventListener("click", () => {
   }
 });
 
-// Boutons opérateurs
 document.querySelectorAll(".operator").forEach((btn) => {
   btn.addEventListener("click", () => {
     const newOp = btn.dataset.op;
 
-    if (firstNumber === "") return; // rien entré encore
+    if (firstNumber === "") return;
 
     if (operator !== "" && secondNumber !== "") {
-      // on a déjà un calcul en attente -> on l'évalue avant de continuer
       evaluate();
     }
 
     operator = newOp;
+    shouldResetDisplay = false;
   });
 });
 
-// Bouton =
 document.querySelector(".equals").addEventListener("click", () => {
   evaluate();
   shouldResetDisplay = true;
 });
 
-// Bouton clear
 document.querySelector(".clear").addEventListener("click", () => {
   firstNumber = "";
   operator = "";
@@ -127,7 +123,6 @@ document.querySelector(".clear").addEventListener("click", () => {
   updateDisplay("0");
 });
 
-// Bouton backspace
 document.querySelector(".backspace").addEventListener("click", () => {
   if (operator === "") {
     firstNumber = firstNumber.slice(0, -1);
@@ -137,4 +132,3 @@ document.querySelector(".backspace").addEventListener("click", () => {
     updateDisplay(secondNumber || "0");
   }
 });
-console.log(operate("+", 3, 5)); // test — devrait afficher 8
