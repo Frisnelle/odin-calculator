@@ -36,11 +36,17 @@ let firstNumber = "";
 let operator = "";
 let secondNumber = "";
 let shouldResetDisplay = false;
+let fullExpression = "";
 
-const display = document.getElementById("display");
+const expressionDisplay = document.getElementById("expression");
+const currentDisplay = document.getElementById("current");
 
 function updateDisplay(value) {
-  display.textContent = value;
+  currentDisplay.textContent = value;
+}
+
+function updateExpressionDisplay() {
+  expressionDisplay.textContent = fullExpression;
 }
 
 function evaluate() {
@@ -66,6 +72,7 @@ document.querySelectorAll(".digit").forEach((btn) => {
 
     if (shouldResetDisplay) {
       updateDisplay("");
+      fullExpression = "";
       if (operator === "") {
         firstNumber = "";
       }
@@ -79,6 +86,9 @@ document.querySelectorAll(".digit").forEach((btn) => {
       secondNumber += digit;
       updateDisplay(secondNumber);
     }
+
+    fullExpression += digit;
+    updateExpressionDisplay();
   });
 });
 
@@ -94,6 +104,9 @@ document.querySelector(".decimal").addEventListener("click", () => {
       updateDisplay(secondNumber);
     }
   }
+
+  fullExpression += ".";
+  updateExpressionDisplay();
 });
 
 document.querySelectorAll(".operator").forEach((btn) => {
@@ -108,6 +121,9 @@ document.querySelectorAll(".operator").forEach((btn) => {
 
     operator = newOp;
     shouldResetDisplay = false;
+
+    fullExpression += " " + newOp + " ";
+    updateExpressionDisplay();
   });
 });
 
@@ -120,7 +136,9 @@ document.querySelector(".clear").addEventListener("click", () => {
   firstNumber = "";
   operator = "";
   secondNumber = "";
+  fullExpression = "";
   updateDisplay("0");
+  updateExpressionDisplay();
 });
 
 document.querySelector(".backspace").addEventListener("click", () => {
@@ -131,4 +149,7 @@ document.querySelector(".backspace").addEventListener("click", () => {
     secondNumber = secondNumber.slice(0, -1);
     updateDisplay(secondNumber || "0");
   }
+
+  fullExpression = fullExpression.slice(0, -1);
+  updateExpressionDisplay();
 });
